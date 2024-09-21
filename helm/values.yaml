@@ -1,0 +1,38 @@
+replicaCount: 1
+
+namem: mysql 
+namej: bookmanage
+
+labels:
+  app: nginx
+labelsmysql:
+  app: mysql
+labelsjava:
+  app: bookmanage
+
+nodeName1: klaus.k8s.node1
+nodeName2: klaus.k8s.node2
+
+image:
+  repository: nginx
+  repositorym: mysql 
+  repositoryj: harbor.klaus.com/bookmanage/project
+  pullPolicy: IfNotPresent
+  tag: "latest"
+  tagm: "5.6.35"
+  tagj: "didv1"
+
+service:
+  type: NodePort
+  port: 80
+  portm: 3306
+  portj: 8080
+
+ingress:
+  enabled: true
+  className: ""
+  hosts:
+    - host: klaus.book.com
+      paths:
+        - path: /
+          pathType: ImplementationSpecific

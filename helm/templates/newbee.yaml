@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.namej }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- range $k,$v := .Values.labelsjava}}
+      {{ $k }}: {{ $v }}
+      {{- end }}
+  template:
+    metadata:
+      labels:
+        {{- range $k,$v := .Values.labelsjava}}
+        {{ $k }}: {{ $v }}
+        {{- end }}
+    spec:
+      nodeName: {{ .Values.nodeName1 }}
+      containers:
+        - name: {{ .Values.namej }}
+          image: {{ .Values.image.repositoryj }}:{{ .Values.image.tagj }}
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: {{ .Values.service.portj }}
+          
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.namej }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  ports:
+    - port: {{ .Values.service.portj }}
+      targetPort: {{ .Values.service.portj }}
+  selector:
+    {{- range $k,$v := .Values.labelsjava}}
+    {{ $k }}: {{ $v }}
+    {{- end }}
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ .Values.namej }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: klaus.book.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ .Values.namej }}
+                port:
+                  number: {{ .Values.service.portj }}
+
+
