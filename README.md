@@ -1,0 +1,2 @@
+# jenkins-argocd
+本项目基于kubernetes采用Jenkins和GitOps来实现一套完整的CICD。
